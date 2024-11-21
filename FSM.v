@@ -22,15 +22,16 @@ parameter   p_Idle = 2'b00,
             p_Update = 2'b01,
             p_MemRd = 2'b10,
             p_Out = 2'b11;
-/* State Params = {iCoeffUpdateFlag: C, wLastRd: L}
+/* State Params = {iCoeffUpdateFlag: U, wLastRd: L
+                    iCsnRam: C, iWrnRam: W}
 
                 Next cycle
 else <=> p_Idle<----------------p_Out
-            |                   ^
-        C=1 |                   | L=1
-            Y       C=0         |
+            |  \                 ^
+        U=1 |   --C=0&&W=1--\    | L=1
+            Y                \   |
 else <=> p_Update------------>p_MemRd <=> else
-
+                    U=0
 */
 
 reg [1:0] rCurState, rNxtState;
