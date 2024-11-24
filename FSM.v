@@ -23,23 +23,24 @@ parameter   p_Idle = 2'b00,
             p_MemRd = 2'b10,
             p_Out = 2'b11;
 /* State Params = {iCoeffUpdateFlag: U, wLastRd: L
-                    iCsnRam: C, iWrnRam: W}
+                    wMemRdFlag: M}
 
                 Next cycle
 else <=> p_Idle<----------------p_Out
-            |  \                 ^
-        U=1 |   --C=0&&W=1--\    | L=1
-            Y                \   |
+            | ^ \                 ^
+        U=1 | |  -------------\   | L=1
+            Y |U=0       M=1   Y  |
 else <=> p_Update------------>p_MemRd <=> else
-                    U=0
+                         M=1
 */
 
 reg [1:0] rCurState, rNxtState;
 reg [3:0] rAddrRam; // Sequential address counter, Max = 10
+wire wMemRdFlag = (!iCsnRam && iWrnRam);
 
 // Last address check with explicit condition
 wire wLastRd;
-assign wLastRd = (rAddrRam == 4'HA) ? 1'b1 : 1'b0;
+assign wLastRd = (iAddrRam[3:0] == 4'd9) ? 1'b1 : 1'b0;
 
 // State register
 always @(posedge iClk12M) begin
@@ -55,32 +56,32 @@ always @(*) begin
         p_Idle: begin
             if(iCoeffUpdateFlag)
                 rNxtState = p_Update;
+            else if(wMemRdFlag)
+                rNxtState = p_MemRd;
             else
                 rNxtState = p_Idle;
         end
-        
         p_Update: begin
             if(!iCoeffUpdateFlag)
+                rNxtState = p_Idle;
+            else if(wMemRdFlag)
                 rNxtState = p_MemRd;
             else
                 rNxtState = p_Update;
         end
-        
         p_MemRd: begin
             if(wLastRd)
                 rNxtState = p_Out;
             else
                 rNxtState = p_MemRd;
         end
-        
         p_Out: begin
             rNxtState = p_Idle;
         end
-        
         default: rNxtState = p_Idle;
     endcase
 end
-
+/* // iAddrRam의 값은 tb에서 처리.
 // Address controler
 always @(posedge iClk12M) begin
     if(!iRsn) begin
@@ -95,34 +96,32 @@ always @(posedge iClk12M) begin
         else if(rCurState == p_Update || rCurState == p_MemRd) begin
             if(!wLastRd)
                 rAddrRam <= rAddrRam + 4'd1;
-            else
-                rAddrRam <= 4'd0;
         end
     end
 end
-
+*/
 // Module selection and data input
 always @(posedge iClk12M) begin
     if(!iRsn) begin
         oModuleSel <= 2'b00;
+        oAddrRam <= 4'b0000;
         oWtDtRam <= 16'h0000;
     end
     else begin
         oModuleSel <= iAddrRam[5:4];
+        oAddrRam <= iAddrRam[3:0];
         oWtDtRam <= iWtDtRam;
     end
 end
 
 // Control signals
 always @(*) begin
-    // Default values
+    // Default
     oCsnRam = 1'b1;
     oWrnRam = 1'b1;
-    oAddrRam = rAddrRam;
     oEnMul = 1'b0;
     oEnAddAcc = 1'b0;
     oEnDelay = 1'b0;
-    
     case(rCurState)
         p_Update: begin
             oCsnRam = 1'b0;

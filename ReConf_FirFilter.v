@@ -29,7 +29,7 @@ wire wEnAddAcc1, wEnAddAcc2, wEnAddAcc3, wEnAddAcc4;
 //Ram to MAC
 wire [15:0] wRdDtRam1, wRdDtRam2, wRdDtRam3, wRdDtRam4;
 //DelayChain to MAC
-wire [2:0] wDelay;
+wire [29:0] wDelay1, wDelay2, wDelay3, wDelay4;
 
 //MAC to MACSum
 wire [15:0] wMac1, wMac2, wMac3, wMac4;
@@ -95,7 +95,10 @@ DelayChain inst_DelayChain(
     .iEnSample600k   (iEnSample600k),
     .iEnDelay        (wEnDelay),
     .iFirIn          (iFirIn),
-    .oDelay          (wDelay)
+    .oDelay1         (wDelay1),
+    .oDelay2         (wDelay2),
+    .oDelay3         (wDelay3),
+    .oDelay4         (wDelay4)
 );
 
 // SpSram instances
@@ -108,7 +111,6 @@ SpSram10x16 inst_SpSram1(
     .iWtDtRam        (wWtDtRam1),
     .oRdDtRam        (wRdDtRam1)
 );
-
 SpSram10x16 inst_SpSram2(
     .iClk12M         (iClk12M),
     .iRsn            (iRsn),
@@ -118,7 +120,6 @@ SpSram10x16 inst_SpSram2(
     .iWtDtRam        (wWtDtRam2),
     .oRdDtRam        (wRdDtRam2)
 );
-
 SpSram10x16 inst_SpSram3(
     .iClk12M         (iClk12M),
     .iRsn            (iRsn),
@@ -128,7 +129,6 @@ SpSram10x16 inst_SpSram3(
     .iWtDtRam        (wWtDtRam3),
     .oRdDtRam        (wRdDtRam3)
 );
-
 SpSram10x16 inst_SpSram4(
     .iClk12M         (iClk12M),
     .iRsn            (iRsn),
@@ -145,37 +145,34 @@ MAC inst_MAC1(
     .iRsn            (iRsn),
     .iEnMul          (wEnMul1),
     .iEnAddAcc       (wEnAddAcc1),
-    .iDelay          (wDelay),
+    .iDelay          (wDelay1),
     .iCoeff          (wRdDtRam1),
     .oMac            (wMac1)
 );
-
 MAC inst_MAC2(
     .iClk12M         (iClk12M),
     .iRsn            (iRsn),
     .iEnMul          (wEnMul2),
     .iEnAddAcc       (wEnAddAcc2),
-    .iDelay          (wDelay),
+    .iDelay          (wDelay2),
     .iCoeff          (wRdDtRam2),
     .oMac            (wMac2)
 );
-
 MAC inst_MAC3(
     .iClk12M         (iClk12M),
     .iRsn            (iRsn),
     .iEnMul          (wEnMul3),
     .iEnAddAcc       (wEnAddAcc3),
-    .iDelay          (wDelay),
+    .iDelay          (wDelay3),
     .iCoeff          (wRdDtRam3),
     .oMac            (wMac3)
 );
-
 MAC inst_MAC4(
     .iClk12M         (iClk12M),
     .iRsn            (iRsn),
     .iEnMul          (wEnMul4),
     .iEnAddAcc       (wEnAddAcc4),
-    .iDelay          (wDelay),
+    .iDelay          (wDelay4),
     .iCoeff          (wRdDtRam4),
     .oMac            (wMac4)
 );

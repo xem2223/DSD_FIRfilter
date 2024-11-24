@@ -3,19 +3,17 @@ module DelayChain(
     input iEnDelay,
     input [2:0] iFirIn,
 
-    output [2:0] oDelay
+    output [29:0] oDelay1, oDelay2, oDelay3, oDelay4
 );
 
-reg signed [2:0] rDelay [20:0];
-reg signed [2:0] rDelaySum;
+reg signed [2:0] rDelay [39:0];
 integer i;
 
 always @(posedge iClk12M) begin
     if(!iRsn) begin
-        for(i=0; i<21; i = i+1)begin
+        for(i=0; i<40; i = i+1)begin
             rDelay[i] <= 3'b000;
         end
-        rDelaySum <= 3'b000;
     end
     if(iEnDelay) begin
         rDelay[0] <= iFirIn;
@@ -41,20 +39,32 @@ always @(posedge iClk12M) begin
         rDelay[18] <= rDelay[17];
         rDelay[19] <= rDelay[18];
         rDelay[20] <= rDelay[19];
-        
-        rDelaySum <= (rDelay[0] + rDelay[20]) + // n±10
-                     (rDelay[2] + rDelay[18]) + // n±9
-                     (rDelay[3] + rDelay[17]) + // n±8
-                     (rDelay[4] + rDelay[16]) + // n±7
-                     (rDelay[5] + rDelay[15]) + // n±6
-                     (rDelay[6] + rDelay[14]) + // n±5
-                     (rDelay[7] + rDelay[13]) + // n±4
-                     (rDelay[8] + rDelay[12]) + // n±3
-                     (rDelay[9] + rDelay[11]) + // n±2
-                     rDelay[10];
+        rDelay[21] <= rDelay[20];
+        rDelay[22] <= rDelay[21];
+        rDelay[23] <= rDelay[22];
+        rDelay[24] <= rDelay[23];
+        rDelay[25] <= rDelay[24];
+        rDelay[26] <= rDelay[25];
+        rDelay[27] <= rDelay[26];
+        rDelay[28] <= rDelay[27];
+        rDelay[29] <= rDelay[28];
+        rDelay[30] <= rDelay[29];
+        rDelay[31] <= rDelay[30];
+        rDelay[32] <= rDelay[31];
+        rDelay[33] <= rDelay[32];
+        rDelay[34] <= rDelay[33];
+        rDelay[35] <= rDelay[34];
+        rDelay[36] <= rDelay[35];
+        rDelay[37] <= rDelay[36];
+        rDelay[38] <= rDelay[37];
+        rDelay[39] <= rDelay[38];
     end
 end
 
-assign oDelay = rDelaySum; 
+assign oDelay1 = {rDelay[9], rDelay[8], rDelay[7], rDelay[6], rDelay[5], rDelay[4], rDelay[3], rDelay[2], rDelay[1], rDelay[0]};
+assign oDelay2 = {rDelay[19], rDelay[18], rDelay[17], rDelay[16], rDelay[15], rDelay[14], rDelay[13], rDelay[12], rDelay[11], rDelay[10]};
+assign oDelay3 = {rDelay[29], rDelay[28], rDelay[27], rDelay[26], rDelay[25], rDelay[24], rDelay[23], rDelay[22], rDelay[21], rDelay[20]};
+assign oDelay4 = {rDelay[39], rDelay[38], rDelay[37], rDelay[36], rDelay[35], rDelay[34], rDelay[33], rDelay[32], rDelay[31], rDelay[30]};
+
 
 endmodule

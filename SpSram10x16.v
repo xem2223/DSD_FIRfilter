@@ -8,7 +8,7 @@ module SpSram10x16(
     output [15:0] oRdDtRam //Read Data
 );
 
-reg [15:0] rRam [10:0];
+reg [15:0] rRam [9:0];
 reg [15:0] rRdbuffer;
 
 always @(posedge iClk12M) begin
@@ -23,7 +23,6 @@ always @(posedge iClk12M) begin
         rRam[7] <= 16'h0000;
         rRam[8] <= 16'h0000;
         rRam[9] <= 16'h0000;
-        rRam[10] <= 16'h0000;
         rRdbuffer <= 16'h0000;
     end
     if(!iCsnRam && !iWrnRam) begin
@@ -39,7 +38,6 @@ always @(posedge iClk12M) begin
             4'h7: rRam[7] <= iWtDtRam;
             4'h8: rRam[8] <= iWtDtRam;
             4'h9: rRam[9] <= iWtDtRam;
-            4'hA: rRam[10] <= iWtDtRam;
             default: ;//Error?
         endcase
     end
@@ -56,7 +54,6 @@ always @(posedge iClk12M) begin
             4'h7: rRdbuffer <= rRam[7];
             4'h8: rRdbuffer <= rRam[8];
             4'h9: rRdbuffer <= rRam[9];
-            4'hA: rRdbuffer <= rRam[10];
             default: rRdbuffer <= 16'h0000;//Error?
         endcase
     end

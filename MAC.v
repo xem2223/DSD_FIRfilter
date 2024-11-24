@@ -2,7 +2,7 @@ module MAC(
     input iClk12M, iRsn,
     // Add&ACC enable together @ timing diagram
     input iEnMul, iEnAddAcc, // Enable at 1, group add & acc
-    input signed [2:0] iDelay, // Delay chain input
+    input signed [29:0] iDelay, // Delay chain input
     input signed [15:0] iCoeff, // Coeff from SpSram output
 
     output [15:0] oMac
