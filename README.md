@@ -81,7 +81,7 @@ else <=> p_Update------------>p_MemRd <=> else
     - output을 [3:0] oDelaySum에서 [29:0] oDelay1~4 로 변경, 3비트의 값 10개를 concat해서 각 MAC 모듈로 전송
  
 - ReConf_FirFilter
-    - [2:0] wDelay를 [29:0] wDelay1~4으로 변경. 각 MAC 모듈엔 wDelay1~4 전달(inst_DelayChain output 및 각 MAC 모듈 input 수정)
+    - [2:0] wDelay를 [29:0] wDelay1\~4으로 변경. 각 MAC 모듈엔 wDelay1~4 전달(inst_DelayChain output 및 각 MAC 모듈 input 수정)
  
 - MAC
     - [2:0] iDelay 에서 [29:0] iDelay로 변경
