@@ -73,7 +73,7 @@ else <=> p_Update------------>p_MemRd <=> else
 - FSM
     - wMemRdFlag 추가: !iCsnRam && iWrnRam 일때1, 해당 신호가 1일때 p_Idle과 p_Updte에서 p_MemRd로 이동.
     - p_Update에서 iCoeffUpdateFlag==0 인 경우 p_MemRd로 이동에서 p_Idle로 변경
-    - oAddrRam의 주소를 FSM에서 처리하지 않고 인풋으로 들어온 iAddrRam[3:0]으로 출력하도록 변경(tb)에서 접근
+    - oAddrRam의 주소를 FSM에서 처리하지 않고 인풋으로 들어온 iAddrRam[3:0]으로 출력하도록 변경. TB에서 적절한 주소 접근
     - WLastRd신호는 iAddrRam[3:0]의 값을 보고 결정. 이게 1일때 무조건 p_Out으로 이동하는게 맞는지는 더 고민해봐야함
  
 - DelayChain
