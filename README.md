@@ -37,15 +37,15 @@ parameter   p_Idle = 2'b00,
             p_MemRd = 2'b10,
             p_Out = 2'b11;
 /* State Params = {iCoeffUpdateFlag: U, wLastRd: L
-                    iCsnRam: C, iWrnRam: W}
+                    wMemRdFlag: M}
 
                 Next cycle
 else <=> p_Idle<----------------p_Out
-            |  \                 ^
-        U=1 |   --C=0&&W=1--\    | L=1
-            Y                \   |
+            | ^ \                 ^
+        U=1 | |  -------------\   | L=1
+            Y |U=0       M=1   Y  |
 else <=> p_Update------------>p_MemRd <=> else
-                    U=0
+                         M=1
 */
 ```
 - [5:0] iAddrRam 신호는 분할하여 [1:0] oModuleSel, [3:0] oAddrRam으로 출력
@@ -63,3 +63,25 @@ else <=> p_Update------------>p_MemRd <=> else
 - [1:0] iModuleSel 신호에 따라서 FSM의 출력 신호를 전달할 모듈 선택
 - 각 입출력 포트명은 FSM과 SpSram/MAC 모듈 사이 wire명과 동일
 - 해당하지 않는 포트는 기본값 전달
+
+---
+
+### 11.24 수정사항
+- SpSram10x16
+    - 각 메모리의 개수 10으로 수정
+
+- FSM
+    - wMemRdFlag 추가: !iCsnRam && iWrnRam 일때1, 해당 신호가 1일때 p_Idle과 p_Updte에서 p_MemRd로 이동.
+    - p_Update에서 iCoeffUpdateFlag==0 인 경우 p_MemRd로 이동에서 p_Idle로 변경
+    - oAddrRam의 주소를 FSM에서 처리하지 않고 인풋으로 들어온 iAddrRam[3:0]으로 출력하도록 변경(tb)에서 접근
+    - WLastRd신호는 iAddrRam[3:0]의 값을 보고 결정. 이게 1일때 무조건 p_Out으로 이동하는게 맞는지는 더 고민해봐야함
+ 
+- DelayChain
+    - 대칭 구조를 버리고 0부터 39번째 tap까지 순환하도록 변경
+    - output을 [3:0] oDelaySum에서 [29:0] oDelay1~4 로 변경, 3비트의 값 10개를 concat해서 각 MAC 모듈로 전송
+ 
+- ReConf_FirFilter
+    - [2:0] wDelay를 [29:0] wDelay1~4으로 변경. 각 MAC 모듈엔 wDelay1~4 전달(inst_DelayChain output 및 각 MAC 모듈 input 수정)
+ 
+- MAC
+    - [2:0] iDelay 에서 [29:0] iDelay로 변경
