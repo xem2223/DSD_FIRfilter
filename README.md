@@ -85,3 +85,6 @@ else <=> p_Update------------>p_MemRd <=> else
  
 - MAC
     - [2:0] iDelay 에서 [29:0] iDelay로 변경
+    - 인덱스별 곱셈 결와와 누적합을 저장하는 reg [15:0] rMul, rAcc [9:0] 추가
+    - 곱셈과 누적 연산 인덱스를 지정하는 rDelayIndex[3:0] 추가
+    - Saturation check 임시 비활성화
